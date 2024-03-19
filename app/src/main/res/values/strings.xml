@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BinaryMinification</string>
+    <string name="logo">Logo</string>
+    <string name="logic_calc">LogicCalc</string>
 </resources>
