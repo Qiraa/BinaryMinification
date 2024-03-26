@@ -22,30 +22,30 @@ import androidx.compose.ui.unit.dp
 import com.example.binaryminification.R
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier){
+fun MainScreen(modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .paint(
-            painterResource(id = R.drawable.main_background),
-            contentScale = ContentScale.Crop,
-        )
+                painterResource(id = R.drawable.main_background),
+                contentScale = ContentScale.Crop,
+            )
     )
-        Column(
-            modifier = Modifier.padding(8.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Image(
-                modifier = Modifier.size(152.dp),
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = stringResource(id = R.string.logo)
-            )
+    Column(
+        modifier = Modifier.padding(8.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Image(
+            modifier = Modifier.size(152.dp),
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = stringResource(id = R.string.logo)
+        )
 
-            Text(
-                text = stringResource(id = R.string.logic_calc),
-                style = MaterialTheme.typography.headlineLarge,
-                color = Color.White,
-            )
-        }
+        Text(
+            text = stringResource(id = R.string.logic_calc),
+            style = MaterialTheme.typography.headlineLarge,
+            color = Color.White,
+        )
     }
+}
