@@ -11,3 +11,5 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val Grape = Color(0xFF7B2BFF)
+val Tundora = Color(0xFF434343)
+val MineShaft = Color(0xFF252525)
