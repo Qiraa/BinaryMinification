@@ -19,7 +19,6 @@ class MainActivity : ComponentActivity() {
             BinaryMinificationTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = Grape
                 ) {
                     SetupNavigation()
                 }
