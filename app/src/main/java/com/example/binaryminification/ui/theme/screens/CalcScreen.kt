@@ -216,14 +216,15 @@ fun CalcScreen(
                         }
                     }
                     item {
-                        FloatingActionButton(onClick = { message += "" }) {
+                        FloatingActionButton(
+                            onClick = { message += "" }
+                        ) {
                             Text(text = "=", style = TextStyle(fontSize = 20.sp))
                         }
                     }
                 }
             }
         }
-
     }
 }
 
