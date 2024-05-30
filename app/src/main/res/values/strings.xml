@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">BinaryMinification</string>
+    <string name="logo">Logo</string>
+    <string name="logic_calc">LogicCalc</string>
+    <string name="fun">Введите функцию:</string>
+    <string name="menu">Меню</string>
+    <string name="calc_history">История вычислений</string>
+    <string name="settings">Настройки</string>
+    <string name="information">О приложении</string>
+    <string name="feedback">Фидбэк</string>
+    <string name="back">Назад</string>
+    <string name="exit">Выйти из приложения</string>
+</resources>
