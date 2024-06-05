@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -31,7 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.binaryminification.R
-import com.example.binaryminification.calcfunction.calcFunction
+import com.example.binaryminification.calcfunction.BinaryCalculator
 import com.example.binaryminification.ui.theme.HistoryScreen
 import com.example.binaryminification.ui.theme.MenuScreen
 
@@ -41,8 +42,12 @@ fun CalcScreen(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
+    var outputMessage: String = ""
     val message = remember {
         mutableStateOf(" ")
+    }
+    val outputMessageState = remember {
+        mutableStateOf("")
     }
     Box(
         modifier = modifier
@@ -95,9 +100,18 @@ fun CalcScreen(
                     .padding(start = 8.dp)
                     .fillMaxWidth()
             )
-            Button(onClick = { calcFunction("(x->y)&&z")}) {
-
+            Button(onClick = {
+                val a = BinaryCalculator();
+                a.calcFunction("(x->y)&&z")
+                outputMessageState.value = a.allPrintsString
+            }){}
+            LazyColumn {
+                item {
+                    Text(text = outputMessageState.value)
+                    Spacer(modifier = modifier.size(24.dp))
+                }
             }
+
         }
     }
 }

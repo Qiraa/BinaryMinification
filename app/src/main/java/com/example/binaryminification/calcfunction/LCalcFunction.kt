@@ -101,113 +101,124 @@ private fun splitByTopLevelOperator(input: String, operator: String): List<Strin
     return parts
 }
 
-fun extractVariables(expression: String): Set<String> {
-    val variables = mutableSetOf<String>()
-    for (char in expression) {
-        if (char.isLetter()) {
-            variables.add(char.toString())
-        }
-    }
-    return variables
-}
+class BinaryCalculator {
+    var allPrintsString: String = "";
 
-fun generateTruthTable(expression: LogicalExpression, variables: Set<String>): List<Map<String, Boolean>> {
-    val variableList = variables.toList()
-    val numRows = 1 shl variableList.size
-    val trueRows = mutableListOf<Map<String, Boolean>>()
-
-    for (i in 0 until numRows) {
-        val assignment = mutableMapOf<String, Boolean>()
-        for (j in variableList.indices) {
-            assignment[variableList[j]] = (i and (1 shl j)) != 0
-        }
-
-        val result = expression.evaluate { assignment[it]!! }
-
-        for (variable in variableList) {
-            print("${if (assignment[variable] == true) 1 else 0} ")
-        }
-        println("| ${if (result) 1 else 0}")
-
-        if (result) {
-            trueRows.add(assignment)
-        }
-    }
-    return trueRows
-}
-
-fun combineAndSimplify(expressions: List<String>): List<String> {
-    val mutableExpressions = expressions.toMutableList()
-    while (true) {
-        var found = false
-        for (i in mutableExpressions.indices) {
-            for (j in i + 1 until mutableExpressions.size) {
-                val combined = tryCombine(mutableExpressions[i], mutableExpressions[j])
-                if (combined != null) {
-                    println("\nИмеющиеся логические выражения:")
-                    mutableExpressions.forEach { println(" $it") }
-                    println("\nСовмещаемые логические выражения:")
-                    println(" ${mutableExpressions[i]}")
-                    println(" ${mutableExpressions[j]}")
-                    println("Результат совмещения:")
-                    println(" $combined")
-                    mutableExpressions[i] = combined
-                    mutableExpressions.removeAt(j)
-                    found = true
-                    break
-                }
+    fun extractVariables(expression: String): Set<String> {
+        val variables = mutableSetOf<String>()
+        for (char in expression) {
+            if (char.isLetter()) {
+                variables.add(char.toString())
             }
-            if (found) break
         }
-        if (!found) break
+        return variables
     }
-    return mutableExpressions
-}
 
-fun tryCombine(expr1: String, expr2: String): String? {
-    val parts1 = expr1.split(" && ").toSet()
-    val parts2 = expr2.split(" && ").toSet()
+    fun generateTruthTable(expression: LogicalExpression, variables: Set<String>): List<Map<String, Boolean>> {
+        val variableList = variables.toList()
+        val numRows = 1 shl variableList.size
+        val trueRows = mutableListOf<Map<String, Boolean>>()
 
-    if (parts1.size != parts2.size) return null
+        for (i in 0 until numRows) {
+            val assignment = mutableMapOf<String, Boolean>()
+            for (j in variableList.indices) {
+                assignment[variableList[j]] = (i and (1 shl j)) != 0
+            }
 
-    val difference = parts1.minus(parts2).union(parts2.minus(parts1))
-    if (difference.size == 2 && difference.any { it.startsWith('!') }) {
-        val commonParts = parts1.intersect(parts2)
-        return commonParts.joinToString(" && ")
-    }
-    return null
-}
+            val result = expression.evaluate { assignment[it]!! }
 
-fun calcFunction(exp: String) {
-    val logicalExpression = exp;
-    println("\nИзначальное логическое выражение: $logicalExpression")
-    val expression = parseExpression(logicalExpression)
+            for (variable in variableList) {
+                allPrintsString += "${if (assignment[variable] == true) 1 else 0} ";
+            }
+            allPrintsString += "| ${if (result) 1 else 0}\n"
 
-    val variables = extractVariables(logicalExpression)
-
-    val trueRows = generateTruthTable(expression, variables)
-
-    // Step 2: Convert trueRows to logical expressions
-    val logicalExpressions = trueRows.map { row ->
-        row.entries.joinToString(" && ") { (variable, value) ->
-            if (value) variable else "!$variable"
+            if (result) {
+                trueRows.add(assignment)
+            }
         }
+        return trueRows
     }
 
-    // Print logical expressions
-    println("\nСоставленный по таблице список логических выражений:")
-    logicalExpressions.forEach { println(it) }
+    fun combineAndSimplify(expressions: List<String>): List<String> {
+        val mutableExpressions = expressions.toMutableList()
+        while (true) {
+            var found = false
+            for (i in mutableExpressions.indices) {
+                for (j in i + 1 until mutableExpressions.size) {
+                    val combined = tryCombine(mutableExpressions[i], mutableExpressions[j])
+                    if (combined != null) {
+                        allPrintsString += "\nИмеющиеся логические выражения:\n"
+                        mutableExpressions.forEach {
+                            allPrintsString += " $it\n"
+                        }
+                        allPrintsString += "\nСовмещаемые логические выражения:\n"
+                        allPrintsString += " ${mutableExpressions[i]}\n"
+                        allPrintsString += " ${mutableExpressions[j]}\n"
+                        allPrintsString += "Результат совмещения:\n"
+                        allPrintsString += " $combined\n"
+                        mutableExpressions[i] = combined
+                        mutableExpressions.removeAt(j)
+                        found = true
+                        break
+                    }
+                }
+                if (found) break
+            }
+            if (!found) break
+        }
+        return mutableExpressions
+    }
 
-    // Step 3: Combine and simplify expressions
-    val simplifiedExpressions = combineAndSimplify(logicalExpressions)
+    fun tryCombine(expr1: String, expr2: String): String? {
+        val parts1 = expr1.split(" && ").toSet()
+        val parts2 = expr2.split(" && ").toSet()
 
-    // Print simplified expressions
-    println("\nСписок совмещенных логических выражений:")
-    simplifiedExpressions.forEach { println(it) }
+        if (parts1.size != parts2.size) return null
 
-    // Step 4: Combine simplified expressions into final expression
-    val finalExpression = simplifiedExpressions.joinToString(" || ")
+        val difference = parts1.minus(parts2).union(parts2.minus(parts1))
+        if (difference.size == 2 && difference.any { it.startsWith('!') }) {
+            val commonParts = parts1.intersect(parts2)
+            return commonParts.joinToString(" && ")
+        }
+        return null
+    }
 
-    println("\nИтоговое логическое выражение:")
-    println(finalExpression)
+    fun calcFunction(exp: String) {
+        val logicalExpression = exp;
+        allPrintsString += "\nИзначальное логическое выражение: $logicalExpression\n"
+        val expression = parseExpression(logicalExpression)
+
+        val variables = extractVariables(logicalExpression)
+        allPrintsString += "\n Шаг 1: Составляем таблицу истинности\n\n"
+        val trueRows = generateTruthTable(expression, variables)
+
+        // Step 2: Convert trueRows to logical expressions
+        val logicalExpressions = trueRows.map { row ->
+            row.entries.joinToString(" && ") { (variable, value) ->
+                if (value) variable else "!$variable"
+            }
+        }
+
+        // Print logical expressions
+        allPrintsString += "\nШаг 2: Составляем по таблице истинности список логических выражений:\n\n"
+        logicalExpressions.forEach {
+            allPrintsString += "$it\n"
+        }
+
+        // Step 3: Combine and simplify expressions
+        allPrintsString += "\nШаг 3: Совмещаем друг с другом логические выражения через || (ИЛИ), что бы убрать повторяющиеся переменные где это возможно:\n\n"
+        val simplifiedExpressions = combineAndSimplify(logicalExpressions)
+
+        // Print simplified expressions
+        allPrintsString += "\nСписок совмещенных логических выражений:\n"
+        simplifiedExpressions.forEach {
+            allPrintsString += "$it\n"
+        }
+
+        // Step 4: Combine simplified expressions into final expression
+        val finalExpression = simplifiedExpressions.joinToString(" || ")
+
+        allPrintsString += "\n\nИтоговое логическое выражение:\n"
+        allPrintsString += "$finalExpression"
+    }
 }
