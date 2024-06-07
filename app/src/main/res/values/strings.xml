@@ -10,4 +10,8 @@
     <string name="feedback">Фидбэк</string>
     <string name="back">Назад</string>
     <string name="exit">Выйти из приложения</string>
+    <string name="welcome">Добро пожаловать!</string>
+    <string name="next">Далее</string>
+    <string name="start">Начать</string>
+    <string name="skip">Пропустить</string>
 </resources>

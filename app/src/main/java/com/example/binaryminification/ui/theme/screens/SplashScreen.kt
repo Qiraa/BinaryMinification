@@ -17,12 +17,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.binaryminification.R
+import com.example.binaryminification.data.OnBoardingManager
 import com.example.binaryminification.ui.theme.CalcScreen
+import com.example.binaryminification.ui.theme.MenuScreen
+import com.example.binaryminification.ui.theme.OnboardingScreen
 import kotlinx.coroutines.delay
 
 @Composable
@@ -30,9 +38,14 @@ fun SplashScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
 ) {
+    val onboardingManager = OnBoardingManager(LocalContext.current)
     LaunchedEffect(Unit) {
         delay(500L)
-        navController.navigate(CalcScreen.route())
+        if (onboardingManager.isOnBoardingShown()) {
+            navController.navigate(CalcScreen.route())
+        } else {
+            navController.navigate(OnboardingScreen.route())
+        }
     }
     Box(
         modifier = modifier
@@ -52,11 +65,15 @@ fun SplashScreen(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = stringResource(id = R.string.logo)
         )
-
         Text(
             text = stringResource(id = R.string.logic_calc),
-            style = MaterialTheme.typography.headlineLarge,
             color = Color.White,
+            style = TextStyle(
+                fontFamily = FontFamily(
+                    Font(R.font.kalam_bold)
+                ),
+                fontSize = 32.sp,
+            ),
         )
 
         CircularProgressIndicator()
