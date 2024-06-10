@@ -60,9 +60,7 @@ fun MenuScreen(
     navController: NavController,
 ) {
     Scaffold(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
+        modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -74,7 +72,7 @@ fun MenuScreen(
                         Icon(
                             imageVector = Icons.Filled.KeyboardArrowLeft,
                             contentDescription = stringResource(id = R.string.back),
-                            modifier = modifier.size(32.dp),
+                            modifier = Modifier.size(32.dp),
                             tint = Color.White,
                         )
                     }

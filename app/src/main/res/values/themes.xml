@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.BinaryMinification" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.BinaryMinification.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/blueViolet</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowSplashScreenAnimationDuration">500</item>
+        <item name="postSplashScreenTheme">@style/Theme.BinaryMinification</item>
+    </style>
+
+    <style name="Theme.BinaryMinification" parent="android:Theme.Material.Light.NoActionBar"/>
 </resources>

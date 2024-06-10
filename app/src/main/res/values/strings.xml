@@ -14,4 +14,9 @@
     <string name="next">Далее</string>
     <string name="start">Начать</string>
     <string name="skip">Пропустить</string>
+    <string name="history_clear">Очистить историю</string>
+    <string name="history_clear_question">Удалить все?</string>
+    <string name="history_clear_description">Ваша история функций будет удалена без возможности восстановить.</string>
+    <string name="history_clear_button">Удалить все</string>
+    <string name="no_history">История отсутствует</string>
 </resources>
