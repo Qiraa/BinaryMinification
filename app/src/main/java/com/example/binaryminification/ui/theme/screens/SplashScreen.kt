@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -48,35 +49,37 @@ fun SplashScreen(
         }
     }
     Box(
+        contentAlignment = Alignment.Center,
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .paint(
                 painterResource(id = R.drawable.main_background),
                 contentScale = ContentScale.Crop,
             )
-    )
-    Column(
-        modifier = Modifier.padding(8.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(
-            modifier = Modifier.size(152.dp),
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = stringResource(id = R.string.logo)
-        )
-        Text(
-            text = stringResource(id = R.string.logic_calc),
-            color = Color.White,
-            style = TextStyle(
-                fontFamily = FontFamily(
-                    Font(R.font.kalam_bold)
+        Column(
+            modifier = Modifier.padding(8.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Image(
+                modifier = Modifier.size(152.dp),
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = stringResource(id = R.string.logo)
+            )
+            Text(
+                text = stringResource(id = R.string.logic_calc),
+                color = Color.White,
+                style = TextStyle(
+                    fontFamily = FontFamily(
+                        Font(R.font.kalam_bold)
+                    ),
+                    fontSize = 32.sp,
                 ),
-                fontSize = 32.sp,
-            ),
-        )
+            )
 
-        CircularProgressIndicator()
+            CircularProgressIndicator()
+        }
     }
 }
 

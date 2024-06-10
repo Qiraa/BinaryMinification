@@ -3,15 +3,14 @@ package com.example.binaryminification.ui.theme.screens
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -31,10 +30,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,74 +43,70 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.binaryminification.R
-import com.example.binaryminification.calcfunction.BinaryCalculator
+import com.example.binaryminification.presentation.calc.CalcViewModel
 import com.example.binaryminification.ui.theme.HistoryScreen
 import com.example.binaryminification.ui.theme.MenuScreen
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun CalcScreen(
+    navController: NavController,
     modifier: Modifier = Modifier,
-    navController: NavController
+    calcViewModel: CalcViewModel = viewModel(),
 ) {
-    var message by remember {
-        mutableStateOf(" ")
-    }
-    var output by remember {
-        mutableStateOf("")
-    }
+    val state by calcViewModel.state.collectAsState()
     Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.logic_calc),
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        style = TextStyle(
+                            fontFamily = FontFamily(
+                                Font(R.font.kalam_bold)
+                            )
+                        ),
+                        fontSize = 32.sp
+                    )
+                },
+                actions = {
+                    IconButton(onClick = { navController.navigate(HistoryScreen.route()) }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.history),
+                            contentDescription = stringResource(id = R.string.calc_history),
+                            tint = Color.White,
+                            modifier = Modifier.size(32.dp),
+                        )
+                    }
+                    IconButton(onClick = { navController.navigate(MenuScreen.route()) }) {
+                        Icon(
+                            imageVector = Icons.Filled.Menu,
+                            contentDescription = stringResource(id = R.string.menu),
+                            tint = Color.White,
+                            modifier = Modifier.size(32.dp),
+                        )
+                    }
+                }
+            )
+        },
         modifier = modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background)
     ) { paddingValues ->
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = paddingValues.calculateBottomPadding())
+                .padding(paddingValues)
+                .fillMaxWidth()
         ) {
-            Row {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.primary,
-                    ),
-                    title = {
-                        Text(
-                            text = stringResource(id = R.string.logic_calc),
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
-                            style = TextStyle(
-                                fontFamily = FontFamily(
-                                    Font(R.font.kalam_bold)
-                                )
-                            ),
-                            fontSize = 32.sp
-                        )
-                    },
-                    actions = {
-                        IconButton(onClick = { navController.navigate(HistoryScreen.route()) }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.history),
-                                contentDescription = stringResource(id = R.string.calc_history),
-                                tint = Color.White,
-                                modifier = Modifier.size(32.dp),
-                            )
-                        }
-                        IconButton(onClick = { navController.navigate(MenuScreen.route()) }) {
-                            Icon(
-                                imageVector = Icons.Filled.Menu,
-                                contentDescription = stringResource(id = R.string.menu),
-                                tint = Color.White,
-                                modifier = Modifier.size(32.dp),
-                            )
-                        }
-                    }
-                )
-            }
-
             Spacer(modifier = modifier.size(24.dp))
             Text(
                 text = stringResource(R.string.`fun`),
@@ -121,22 +114,22 @@ fun CalcScreen(
                 modifier = Modifier.padding(start = 8.dp)
             )
             BasicTextField(
-                value = message,
-                onValueChange = { newValue -> message = newValue },
+                value = state.input,
+                onValueChange = { newValue -> calcViewModel.onInputUpdate(newValue) },
                 modifier = Modifier
                     .padding(start = 8.dp)
                     .fillMaxWidth()
             )
             Text(
-                text = output,
+                text = state.output,
                 style = TextStyle(MaterialTheme.colorScheme.tertiary),
                 modifier = Modifier
                     .padding(start = 8.dp)
                     .fillMaxWidth()
             )
+            Spacer(modifier = Modifier.height(8.dp))
             Box(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.BottomCenter,
             ) {
                 LazyVerticalGrid(
@@ -144,85 +137,84 @@ fun CalcScreen(
                     modifier = Modifier.fillMaxWidth(),
                     contentPadding = PaddingValues(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-
-                    ) {
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     item {
-                        FloatingActionButton(onClick = { message += "A" }) {
+                        FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("A") }) {
                             Text(text = "A")
                         }
                     }
                     item {
-                        FloatingActionButton(onClick = { message += "B" }) {
+                        FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("B") }) {
                             Text(text = "B")
                         }
                     }
                     item {
-                        FloatingActionButton(onClick = { message += "C" }) {
+                        FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("C") }) {
                             Text(text = "C")
                         }
                     }
                     item {
-                        FloatingActionButton(onClick = { message += "D" }) {
+                        FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("D") }) {
                             Text(text = "D")
                         }
                     }
                     item {
-                        FloatingActionButton(onClick = { message += "∨" }) {
+                        FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("∨") }) {
                             Text(text = "∨")
                         }
                     }
                     item {
-                        FloatingActionButton(onClick = { message += "∧" }) {
+                        FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("∧") }) {
                             Text(text = "∧")
                         }
                     }
                     item {
-                        FloatingActionButton(onClick = { message += "¬" }) {
+                        FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("¬") }) {
                             Text(text = "¬", style = TextStyle(fontSize = 20.sp))
                         }
                     }
                     item {
-                        FloatingActionButton(onClick = { message += "→" }) {
+                        FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("→") }) {
                             Text(text = "→", style = TextStyle(fontSize = 20.sp))
                         }
                     }
                     item {
-                        FloatingActionButton(onClick = { message += "~" }) {
+                        FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("~") }) {
                             Text(text = "~", style = TextStyle(fontSize = 20.sp))
                         }
                     }
                     item {
-                        FloatingActionButton(onClick = { message += "⊕" }) {
+                        FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("⊕") }) {
                             Text(text = "⊕", style = TextStyle(fontSize = 20.sp))
                         }
                     }
                     item {
-                        FloatingActionButton(onClick = { message += "|" }) {
+                        FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("|") }) {
                             Text(text = "|", style = TextStyle(fontSize = 20.sp))
                         }
                     }
                     item {
-                        FloatingActionButton(onClick = { message += "↓" }) {
+                        FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("↓") }) {
                             Text(text = "↓", style = TextStyle(fontSize = 20.sp))
                         }
                     }
                     item {
-                        FloatingActionButton(onClick = { message += ")" }) {
+                        FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("(") }) {
                             Text(text = "(")
                         }
                     }
                     item {
-                        FloatingActionButton(onClick = { message += ")" }) {
+                        FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick(")") }) {
                             Text(text = ")")
                         }
                     }
                     item {
                         FloatingActionButton(
-                            onClick = { message = message.dropLast(1) },
+                            onClick = { calcViewModel.onDeleteButtonClick() },
                             modifier = Modifier.combinedClickable(
                                 onClick = { },
-                                onLongClick = { message = " " }
+                                onLongClick = { calcViewModel.onClear() }
                             )
                         ) {
                             Text(text = "Del")
@@ -230,11 +222,7 @@ fun CalcScreen(
                     }
                     item {
                         FloatingActionButton(
-                            onClick = {
-                                val a = BinaryCalculator();
-                                a.calcFunction(message)
-                                output = a.allPrintsString
-                            }
+                            onClick = { calcViewModel.onCalculateButtonClick() }
                         ) {
                             Text(text = "=", style = TextStyle(fontSize = 20.sp))
                         }
