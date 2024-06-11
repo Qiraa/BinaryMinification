@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
@@ -111,7 +113,6 @@ fun CalcScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .verticalScroll(rememberScrollState())
             ) {
                 Spacer(modifier = modifier.size(24.dp))
                 Text(
@@ -126,13 +127,21 @@ fun CalcScreen(
                         .padding(start = 8.dp)
                         .fillMaxWidth()
                 )
-                Text(
-                    text = state.output,
-                    style = TextStyle(MaterialTheme.colorScheme.tertiary),
+                LazyColumn(
                     modifier = Modifier
-                        .padding(start = 8.dp)
-                        .fillMaxWidth()
-                )
+                        .padding(8.dp)
+                        .fillMaxWidth(),
+                ) {
+                    items(state.output) { pair ->
+                        val style = when (pair.second) {
+                            "title" -> titleTextStyle()
+                            "subtitle" -> subtitleTextStyle()
+                            "table" -> tableTextStyle()
+                            else -> commonTextStyle()
+                        }
+                        Text(text = pair.first, style = style)
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
             }
             Box(contentAlignment = Alignment.BottomCenter) {
@@ -237,6 +246,39 @@ fun CalcScreen(
     }
 }
 
+@Composable
+private fun commonTextStyle():TextStyle {
+    return TextStyle(
+        color = MaterialTheme.colorScheme.tertiary,
+        fontSize = 18.sp,
+        fontWeight = FontWeight.W400
+    )
+}
+@Composable
+private fun titleTextStyle():TextStyle {
+    return TextStyle(
+        color = MaterialTheme.colorScheme.tertiary,
+        fontSize = 22.sp,
+        fontWeight = FontWeight.W700
+    )
+}
+@Composable
+private fun subtitleTextStyle():TextStyle {
+    return TextStyle(
+        color = MaterialTheme.colorScheme.tertiary,
+        fontSize = 19.sp,
+        fontWeight = FontWeight.W500
+    )
+}
+
+@Composable
+private fun tableTextStyle():TextStyle {
+    return TextStyle(
+        color = MaterialTheme.colorScheme.tertiary,
+        fontSize = 19.sp,
+        fontWeight = FontWeight.W400
+    )
+}
 
 
 

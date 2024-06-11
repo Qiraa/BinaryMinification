@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 class CalcViewModel : ViewModel() {
 
     private val mutableState: MutableStateFlow<CalcState> =
-        MutableStateFlow(CalcState("", ""))
+        MutableStateFlow(CalcState("", emptyList()))
     val state: StateFlow<CalcState> = mutableState.asStateFlow()
 
     fun onInputUpdate(newInput: String) {
@@ -37,18 +37,21 @@ class CalcViewModel : ViewModel() {
         val binaryCalculator = BinaryCalculator()
         try {
             binaryCalculator.calcFunction(mutableState.value.input)
-            mutableState.update { it.copy(output = binaryCalculator.allPrintsString) }
+            mutableState.update { it.copy(output = binaryCalculator.textTagList) }
             viewModelScope.launch {
                 App.db.historyEntityDao().insertAll(
                     HistoryEntity(
                         input = mutableState.value.input,
-                        output = binaryCalculator.allPrintsString,
+                        output = binaryCalculator.textTagList
+                            .joinToString(separator = "\n") { it.first },
                         timestamp = System.currentTimeMillis(),
                     )
                 )
             }
         } catch (ex: Exception) {
-            mutableState.update { it.copy(output = ex.localizedMessage ?: "Something went wrong") }
+            mutableState.update {
+                it.copy(output = listOf((ex.localizedMessage ?: "Something went wrong") to ""))
+            }
         }
     }
 }
