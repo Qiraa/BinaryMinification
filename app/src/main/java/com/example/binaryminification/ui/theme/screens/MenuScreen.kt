@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,7 +19,6 @@ import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -51,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.binaryminification.R
 import com.example.binaryminification.ui.theme.CalcScreen
+import com.example.binaryminification.ui.theme.InfoScreen
 import com.example.binaryminification.ui.theme.utils.openUrl
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -127,7 +126,9 @@ fun MenuScreen(
                             modifier = Modifier.fillMaxWidth(),
                             color = MaterialTheme.colorScheme.tertiary
                         )
-                        MenuItem(icon = Icons.Filled.Info, text = R.string.information)
+                        MenuItem(icon = Icons.Filled.Info, text = R.string.information) {
+                            navController.navigate(InfoScreen.route())
+                        }
                     }
                 }
             }

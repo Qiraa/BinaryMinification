@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.binaryminification.ui.theme.screens.CalcScreen
 import com.example.binaryminification.ui.theme.screens.HistoryScreen
+import com.example.binaryminification.ui.theme.screens.InfoScreen
 import com.example.binaryminification.ui.theme.screens.MenuScreen
 import com.example.binaryminification.ui.theme.screens.OnboardingScreen
 import com.example.binaryminification.ui.theme.screens.SplashScreen
@@ -43,6 +44,12 @@ object HistoryScreen {
     }
 }
 
+object InfoScreen {
+    fun route(): String {
+        return "information"
+    }
+}
+
 @Composable
 fun SetupNavigation() {
     val navController = rememberNavController()
@@ -65,6 +72,9 @@ fun SetupNavigation() {
         }
         composable(HistoryScreen.route()) {
             HistoryScreen(navController = navController)
+        }
+        composable(InfoScreen.route()) {
+            InfoScreen(navController = navController)
         }
     }
 }
