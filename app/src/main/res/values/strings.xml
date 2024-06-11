@@ -19,4 +19,6 @@
     <string name="history_clear_description">Ваша история функций будет удалена без возможности восстановить.</string>
     <string name="history_clear_button">Удалить все</string>
     <string name="no_history">История отсутствует</string>
+    <string name="info">Информация о приложении</string>
+    <string name="version">Версия</string>
 </resources>

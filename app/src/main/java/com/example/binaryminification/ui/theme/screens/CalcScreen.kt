@@ -105,33 +105,37 @@ fun CalcScreen(
         Column(
             modifier = Modifier
                 .padding(paddingValues)
-                .fillMaxWidth()
+                .fillMaxSize()
         ) {
-            Spacer(modifier = modifier.size(24.dp))
-            Text(
-                text = stringResource(R.string.`fun`),
-                style = TextStyle(MaterialTheme.colorScheme.tertiary),
-                modifier = Modifier.padding(start = 8.dp)
-            )
-            BasicTextField(
-                value = state.input,
-                onValueChange = { newValue -> calcViewModel.onInputUpdate(newValue) },
+            Column(
                 modifier = Modifier
-                    .padding(start = 8.dp)
                     .fillMaxWidth()
-            )
-            Text(
-                text = state.output,
-                style = TextStyle(MaterialTheme.colorScheme.tertiary),
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.BottomCenter,
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
             ) {
+                Spacer(modifier = modifier.size(24.dp))
+                Text(
+                    text = stringResource(R.string.`fun`),
+                    style = TextStyle(MaterialTheme.colorScheme.tertiary),
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+                BasicTextField(
+                    value = state.input,
+                    onValueChange = { newValue -> calcViewModel.onInputUpdate(newValue) },
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .fillMaxWidth()
+                )
+                Text(
+                    text = state.output,
+                    style = TextStyle(MaterialTheme.colorScheme.tertiary),
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+            Box(contentAlignment = Alignment.BottomCenter) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(4),
                     modifier = Modifier.fillMaxWidth(),
