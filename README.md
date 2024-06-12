@@ -17,7 +17,9 @@ Also, we save the calculation history.
 <img src='https://github.com/Qiraa/BinaryMinification/assets/95233666/809d9d66-0d86-485d-ac5e-8491d3200e9d' height=450> 
 <img src='https://github.com/Qiraa/BinaryMinification/assets/95233666/55ae7e3c-68d3-4818-aa53-ed95b2125f1c' height=450> 
 <img src='https://github.com/Qiraa/BinaryMinification/assets/95233666/a3f6319e-687d-40cb-915f-7de0bec920eb' height=450> 
-<img src='https://github.com/Qiraa/BinaryMinification/assets/95233666/97f27f83-0f45-47d9-8ea2-7a986f4526e6' height=450> 
+<img src='https://github.com/Qiraa/BinaryMinification/assets/95233666/97f27f83-0f45-47d9-8ea2-7a986f4526e6' height=450>
+<img src='https://github.com/Qiraa/BinaryMinification/assets/95233666/22e2f484-1a80-499a-a3d3-460ae84b0e83' height=450>
+<img src='https://github.com/Qiraa/BinaryMinification/assets/95233666/7271ee80-04e7-4c31-b542-bc59263e2d62' height=450>
 
 ### Dark Theme
 
