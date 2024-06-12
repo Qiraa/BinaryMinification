@@ -1,4 +1,4 @@
-package com.example.binaryminification.calcfunction
+package com.example.binaryminification.domain
 
 import androidx.compose.runtime.mutableStateListOf
 

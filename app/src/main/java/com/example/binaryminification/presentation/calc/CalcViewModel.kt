@@ -3,8 +3,8 @@ package com.example.binaryminification.presentation.calc
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.binaryminification.App
-import com.example.binaryminification.domain.BinaryCalculator
 import com.example.binaryminification.data.HistoryEntity
+import com.example.binaryminification.domain.BinaryCalculator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
