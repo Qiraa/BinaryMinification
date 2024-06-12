@@ -187,7 +187,7 @@ class BinaryCalculator {
                 tempStr += "${if (assignment[variable] == true) 1 else 0} ";
             }
             finalRows.add(result)
-            tempStr += "| ${if (result) 1 else 0}"
+            tempStr += "∣ ${if (result) 1 else 0}"
             textTagList.add(Pair(tempStr, "table"))
 
             if (result) {

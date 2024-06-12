@@ -67,7 +67,7 @@ fun MenuScreen(
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(CalcScreen.route()) }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.Filled.KeyboardArrowLeft,
                             contentDescription = stringResource(id = R.string.back),
