@@ -52,7 +52,16 @@ fun parseExpression(input: String): LogicalExpression {
 private fun parseImpliesExpression(input: String): LogicalExpression {
     val parts = splitByTopLevelOperator(input, "→")
     return if (parts.size > 1) {
-        ImpliesExpression(parseXORExpression(parts[0]), parseXORExpression(parts[1]))
+        ImpliesExpression(parseEqualExpression(parts[0]), parseEqualExpression(parts[1]))
+    } else {
+        parseEqualExpression(input)
+    }
+}
+
+private fun parseEqualExpression(input: String): LogicalExpression {
+    val parts = splitByTopLevelOperator(input, "~")
+    return if (parts.size > 1) {
+        EqualExpression(parseXORExpression(parts[0]), parseXORExpression(parts[1]))
     } else {
         parseXORExpression(input)
     }
@@ -148,7 +157,7 @@ private fun splitByTopLevelOperator(input: String, operator: String): List<Strin
 
 class BinaryCalculator {
     var textTagList = mutableStateListOf<Pair<String, String>>()
-
+    var earlyReturn: Int = -1
     private fun extractVariables(expression: String): Set<String> {
         val variables = mutableSetOf<String>()
         for (char in expression) {
@@ -164,6 +173,8 @@ class BinaryCalculator {
         val numRows = 1 shl variableList.size
         val trueRows = mutableListOf<Map<String, Boolean>>()
 
+        val finalRows = mutableSetOf<Boolean>()
+
         for (i in 0 until numRows) {
             val assignment = mutableMapOf<String, Boolean>()
             for (j in variableList.indices) {
@@ -175,12 +186,17 @@ class BinaryCalculator {
             for (variable in variableList) {
                 tempStr += "${if (assignment[variable] == true) 1 else 0} ";
             }
+            finalRows.add(result)
             tempStr += "| ${if (result) 1 else 0}"
             textTagList.add(Pair(tempStr, "table"))
 
             if (result) {
                 trueRows.add(assignment)
             }
+        }
+        if(finalRows.size == 1){
+            if(finalRows.first() == true) earlyReturn = 1
+                else if(finalRows.first() == false) earlyReturn = 0
         }
         return trueRows
     }
@@ -193,11 +209,11 @@ class BinaryCalculator {
                 for (j in i + 1 until mutableExpressions.size) {
                     val combined = tryCombine(mutableExpressions[i], mutableExpressions[j])
                     if (combined != null) {
-                        textTagList.add(Pair("Имеющиеся логические выражения:", "subtitle"))
+                        textTagList.add(Pair("Имеющиеся конъюнкты:", "subtitle"))
                         mutableExpressions.forEach {
                             textTagList.add(Pair(it, "t"))
                         }
-                        textTagList.add(Pair("Совмещаемые логические выражения:", "t"))
+                        textTagList.add(Pair("Совмещаемые конъюнкты:", "t"))
                         textTagList.add(Pair(" ${mutableExpressions[i]}", "t"))
                         textTagList.add(Pair(" ${mutableExpressions[j]}", "t"))
                         textTagList.add(Pair("Результат совмещения:", "subtitle"))
@@ -233,6 +249,7 @@ class BinaryCalculator {
 
     fun calcFunction(logicalExpression: String) {
         textTagList.clear()
+        earlyReturn = -1
         textTagList.add(Pair("Изначальное логическое выражение: $logicalExpression", "title"))
         val expression = parseExpression(logicalExpression)
 
@@ -245,34 +262,46 @@ class BinaryCalculator {
         textTagList.add(Pair(tempText, "table"))
         val trueRows = generateTruthTable(expression, variables)
 
-        // Step 2: Convert trueRows to logical expressions
+        if(earlyReturn != -1){
+            tempText = ""
+            tempText += "\nШаг 2: Дальше нечего проверять, ведь "
+            if(earlyReturn == 0) tempText += "все столбцы равны 0"
+            else if(earlyReturn == 1) tempText += "все столбцы равны 1"
+            tempText += "\nСледовательно, после упрощения всего выражения у нас останется $earlyReturn"
+            textTagList.add(Pair("\n$tempText:\n", "title"))
+            return
+        }
+
         val logicalExpressions = trueRows.map { row ->
             row.entries.joinToString(" ∧ ") { (variable, value) ->
                 if (value) variable else "¬$variable"
             }
         }
-
-        // Print logical expressions
-        textTagList.add(Pair("\nШаг 2: Составляем по таблице истинности список логических выражений:\n", "title"))
+        textTagList.add(Pair("\nШаг 2: Составляем по таблице истинности список конъюнктов:\n", "title"))
         logicalExpressions.forEach {
             textTagList.add(Pair(it, "t"))
         }
 
-        // Step 3: Combine and simplify expressions
-        textTagList.add(Pair("\nШаг 3: Совмещаем друг с другом логические выражения через ∨ (ИЛИ), что бы убрать повторяющиеся переменные где это возможно:\n", "title"))
+        textTagList.add(Pair("\nШаг 3: Объеденив их через дизъюнкции, получаем СДНФ:\n", "title"))
+        tempText = ""
+        logicalExpressions.forEach {
+            tempText += " $it ∨"
+        }
+        tempText.dropLast(1)
+        textTagList.add(Pair(tempText, "t"))
+
+        textTagList.add(Pair("\nШаг 4: Постепенно сокращаем конъюнкты СДНФ (если это возможно):\n", "title"))
         val simplifiedExpressions = combineAndSimplify(logicalExpressions)
 
-        // Print simplified expressions
-        textTagList.add(Pair("\nСписок совмещенных логических выражений:\n", "title"))
+        textTagList.add(Pair("\nИтоговый список конъюнктов:\n", "title"))
 
         simplifiedExpressions.forEach {
             textTagList.add(Pair(it, "t"))
         }
 
-        // Step 4: Combine simplified expressions into final expression
-        val finalExpression = simplifiedExpressions.joinToString(" || ")
+        val finalExpression = simplifiedExpressions.joinToString(" ∨ ")
 
-        textTagList.add(Pair("\nИтоговое логическое выражение:\n", "title"))
+        textTagList.add(Pair("\nИтоговое логическое выражение (ДНФ):\n", "title"))
         textTagList.add(Pair(finalExpression, "t"))
     }
 }
