@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">BinaryMinification</string>
-    <string name="logo">Logo</string>
+    <string name="app_name">Logic Calc</string>
     <string name="logic_calc">LogicCalc</string>
     <string name="fun">Введите функцию:</string>
     <string name="menu">Меню</string>
@@ -10,7 +9,6 @@
     <string name="feedback">Фидбэк</string>
     <string name="back">Назад</string>
     <string name="exit">Выйти из приложения</string>
-    <string name="welcome">Добро пожаловать!</string>
     <string name="next">Далее</string>
     <string name="start">Начать</string>
     <string name="skip">Пропустить</string>
@@ -21,4 +19,29 @@
     <string name="no_history">История отсутствует</string>
     <string name="info">Информация о приложении</string>
     <string name="version">Версия</string>
+    <string name="var_a">Переменная\nА\n</string>
+    <string name="var_b">Переменная\nБ\n</string>
+    <string name="var_c">Переменная\nЦ\n</string>
+    <string name="var_d">Переменная\nД\n</string>
+    <string name="just_a">А\n</string>
+    <string name="just_b">Б\n</string>
+    <string name="just_c">Ц\n</string>
+    <string name="just_d">Д\n</string>
+    <string name="symb_or">Значок дизъюнкции\n</string>
+    <string name="symb_and">Значок конъюнкции\n</string>
+    <string name="symb_not">Значок отрицания\n</string>
+    <string name="symb_implication">Значок импликации\n</string>
+    <string name="symb_equal">Значок равнозначности\n</string>
+    <string name="symb_xor">Значок исключающего или\n</string>
+    <string name="symb_nand">Штрих Шээфера\n</string>
+    <string name="symb_nor">Стрелка Пирса\n</string>
+    <string name="symb_del">Удалить символ\n</string>
+    <string name="symb_res">Результат</string>
+    <string name="onboarding_step1">Ищите  решение\nлогических задач?\n</string>
+    <string name="onboarding_step2">Наш калькулятор\nпоможет в этом!\n</string>
+    <string name="onboarding_step3">Вперед!\nВ главное меню!\n</string>
+    <string name="expand">Показать детали решения</string>
+    <string name="hide">Скрыть детали решения</string>
+    <string name="hide_accessibility">Скрыть</string>
+    <string name="expand_accessibility">Раскрыть</string>
 </resources>

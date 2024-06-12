@@ -5,15 +5,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
@@ -21,6 +20,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.invisibleToUser
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -30,10 +31,10 @@ import androidx.navigation.NavController
 import com.example.binaryminification.R
 import com.example.binaryminification.data.OnBoardingManager
 import com.example.binaryminification.ui.theme.CalcScreen
-import com.example.binaryminification.ui.theme.MenuScreen
 import com.example.binaryminification.ui.theme.OnboardingScreen
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SplashScreen(
     modifier: Modifier = Modifier,
@@ -43,8 +44,10 @@ fun SplashScreen(
     LaunchedEffect(Unit) {
         delay(500L)
         if (onboardingManager.isOnBoardingShown()) {
+            navController.popBackStack()
             navController.navigate(CalcScreen.route())
         } else {
+            navController.popBackStack()
             navController.navigate(OnboardingScreen.route())
         }
     }
@@ -65,7 +68,7 @@ fun SplashScreen(
             Image(
                 modifier = Modifier.size(152.dp),
                 painter = painterResource(id = R.drawable.logo),
-                contentDescription = stringResource(id = R.string.logo)
+                contentDescription = null,
             )
             Text(
                 text = stringResource(id = R.string.logic_calc),
@@ -76,6 +79,7 @@ fun SplashScreen(
                     ),
                     fontSize = 32.sp,
                 ),
+                modifier = Modifier.semantics { invisibleToUser() }
             )
 
             CircularProgressIndicator()

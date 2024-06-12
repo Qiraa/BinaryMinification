@@ -35,10 +35,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.invisibleToUser
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -48,17 +53,23 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.binaryminification.R
+import com.example.binaryminification.domain.getEvaluationContentDescription
 import com.example.binaryminification.presentation.calc.CalcViewModel
 import com.example.binaryminification.ui.theme.HistoryScreen
 import com.example.binaryminification.ui.theme.MenuScreen
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
+    ExperimentalComposeUiApi::class,
+)
 @Composable
 fun CalcScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     calcViewModel: CalcViewModel = viewModel(),
 ) {
+    val context = LocalContext.current
     val state by calcViewModel.state.collectAsState()
     Scaffold(
         topBar = {
@@ -77,7 +88,8 @@ fun CalcScreen(
                                 Font(R.font.kalam_bold)
                             )
                         ),
-                        fontSize = 32.sp
+                        fontSize = 32.sp,
+                        modifier = Modifier.semantics { invisibleToUser() }
                     )
                 },
                 actions = {
@@ -126,6 +138,9 @@ fun CalcScreen(
                     modifier = Modifier
                         .padding(start = 8.dp)
                         .fillMaxWidth()
+                        .semantics {
+                            contentDescription = getEvaluationContentDescription(context, state.input)
+                        }
                 )
                 LazyColumn(
                     modifier = Modifier
@@ -139,7 +154,13 @@ fun CalcScreen(
                             "table" -> tableTextStyle()
                             else -> commonTextStyle()
                         }
-                        Text(text = pair.first, style = style)
+                        Text(
+                            text = pair.first,
+                            style = style,
+                            modifier = Modifier.semantics {
+                                contentDescription = getEvaluationContentDescription(context, pair.first)
+                            }
+                        )
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -153,63 +174,140 @@ fun CalcScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     item {
+                        val contextDescription = stringResource(id = R.string.var_a)
                         FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("A") }) {
-                            Text(text = "A")
+                            Text(
+                                text = "A", 
+                                modifier = Modifier.semantics {
+                                    this.contentDescription = contextDescription
+                                }
+                            )
                         }
                     }
                     item {
+                        val contextDescription = stringResource(id = R.string.var_b)
                         FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("B") }) {
-                            Text(text = "B")
+                            Text(
+                                text = "B",
+                                modifier = Modifier.semantics {
+                                    this.contentDescription = contextDescription
+                                }
+                            )
                         }
                     }
                     item {
+                        val contextDescription = stringResource(id = R.string.var_c)
                         FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("C") }) {
-                            Text(text = "C")
+                            Text(
+                                text = "C",
+                                modifier = Modifier.semantics {
+                                    this.contentDescription = contextDescription
+                                }
+                            )
                         }
                     }
                     item {
+                        val contextDescription = stringResource(id = R.string.var_d)
                         FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("D") }) {
-                            Text(text = "D")
+                            Text(
+                                text = "D",
+                                modifier = Modifier.semantics {
+                                    this.contentDescription = contextDescription
+                                }
+                            )
                         }
                     }
                     item {
+                        val contextDescription = stringResource(id = R.string.symb_or)
                         FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("∨") }) {
-                            Text(text = "∨")
+                            Text(
+                                text = "∨",
+                                modifier = Modifier.semantics {
+                                    this.contentDescription = contextDescription
+                                }
+                            )
                         }
                     }
                     item {
+                        val contextDescription = stringResource(id = R.string.symb_and)
                         FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("∧") }) {
-                            Text(text = "∧")
+                            Text(
+                                text = "∧",
+                                modifier = Modifier.semantics {
+                                    this.contentDescription = contextDescription
+                                }
+                            )
                         }
                     }
                     item {
+                        val contextDescription = stringResource(id = R.string.symb_not)
                         FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("¬") }) {
-                            Text(text = "¬", style = TextStyle(fontSize = 20.sp))
+                            Text(
+                                text = "¬",
+                                style = TextStyle(fontSize = 20.sp),
+                                modifier = Modifier.semantics {
+                                    this.contentDescription = contextDescription
+                                }
+                            )
                         }
                     }
                     item {
+                        val contextDescription = stringResource(id = R.string.symb_implication)
                         FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("→") }) {
-                            Text(text = "→", style = TextStyle(fontSize = 20.sp))
+                            Text(
+                                style = TextStyle(fontSize = 20.sp),
+                                text = "→",
+                                modifier = Modifier.semantics {
+                                    this.contentDescription = contextDescription
+                                }
+                            )
                         }
                     }
                     item {
+                        val contextDescription = stringResource(id = R.string.symb_equal)
                         FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("~") }) {
-                            Text(text = "~", style = TextStyle(fontSize = 20.sp))
+                            Text(
+                                text = "~",
+                                style = TextStyle(fontSize = 20.sp),
+                                modifier = Modifier.semantics {
+                                    this.contentDescription = contextDescription
+                                }
+                            )
                         }
                     }
                     item {
+                        val contextDescription = stringResource(id = R.string.symb_xor)
                         FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("⊕") }) {
-                            Text(text = "⊕", style = TextStyle(fontSize = 20.sp))
+                            Text(
+                                text = "⊕",
+                                style = TextStyle(fontSize = 20.sp),
+                                modifier = Modifier.semantics {
+                                    this.contentDescription = contextDescription
+                                }
+                            )
                         }
                     }
                     item {
+                        val contextDescription = stringResource(id = R.string.symb_nand)
                         FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("|") }) {
-                            Text(text = "|", style = TextStyle(fontSize = 20.sp))
+                            Text(
+                                text = "|",
+                                style = TextStyle(fontSize = 20.sp),
+                                modifier = Modifier.semantics {
+                                    this.contentDescription = contextDescription
+                                })
                         }
                     }
                     item {
+                        val contextDescription = stringResource(id = R.string.symb_nor)
                         FloatingActionButton(onClick = { calcViewModel.onKeyboardButtonClick("↓") }) {
-                            Text(text = "↓", style = TextStyle(fontSize = 20.sp))
+                            Text(
+                                text = "↓",
+                                style = TextStyle(fontSize = 20.sp),
+                                modifier = Modifier.semantics {
+                                    this.contentDescription = contextDescription
+                                }
+                            )
                         }
                     }
                     item {
@@ -223,6 +321,7 @@ fun CalcScreen(
                         }
                     }
                     item {
+                        val contextDescription = stringResource(id = R.string.symb_del)
                         FloatingActionButton(
                             onClick = { calcViewModel.onDeleteButtonClick() },
                             modifier = Modifier.combinedClickable(
@@ -230,14 +329,26 @@ fun CalcScreen(
                                 onLongClick = { calcViewModel.onClear() }
                             )
                         ) {
-                            Text(text = "Del")
+                            Text(
+                                text = "Del",
+                                modifier = Modifier.semantics {
+                                    this.contentDescription = contextDescription
+                                }
+                            )
                         }
                     }
                     item {
+                        val contextDescription = stringResource(id = R.string.symb_res)
                         FloatingActionButton(
                             onClick = { calcViewModel.onCalculateButtonClick() }
                         ) {
-                            Text(text = "=", style = TextStyle(fontSize = 20.sp))
+                            Text(
+                                text = "=",
+                                style = TextStyle(fontSize = 20.sp),
+                                modifier = Modifier.semantics {
+                                    this.contentDescription = contextDescription
+                                }
+                            )
                         }
                     }
                 }

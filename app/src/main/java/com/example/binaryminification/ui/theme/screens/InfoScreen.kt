@@ -19,10 +19,15 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.invisibleToUser
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -34,14 +39,14 @@ import com.example.binaryminification.BuildConfig
 import com.example.binaryminification.R
 import com.example.binaryminification.ui.theme.MenuScreen
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun InfoScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
 ) {
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -49,7 +54,7 @@ fun InfoScreen(
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(MenuScreen.route()) }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.Filled.KeyboardArrowLeft,
                             contentDescription = stringResource(id = R.string.back),
@@ -86,7 +91,7 @@ fun InfoScreen(
                 Image(
                     modifier = Modifier.size(152.dp),
                     painter = painterResource(id = R.drawable.logo),
-                    contentDescription = stringResource(id = R.string.logo)
+                    contentDescription = null,
                 )
                 Text(
                     text = stringResource(id = R.string.logic_calc),
@@ -97,6 +102,7 @@ fun InfoScreen(
                         ),
                         fontSize = 32.sp,
                     ),
+                    modifier = Modifier.semantics { invisibleToUser() }
                 )
                 Text(
                     text = stringResource(R.string.version) + " " + BuildConfig.VERSION_NAME,

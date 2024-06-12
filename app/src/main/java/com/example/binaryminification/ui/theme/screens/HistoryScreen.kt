@@ -41,6 +41,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -50,6 +53,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.binaryminification.R
+import com.example.binaryminification.domain.getEvaluationContentDescription
 import com.example.binaryminification.presentation.history.HistoryItem
 import com.example.binaryminification.presentation.history.HistoryViewModel
 import com.example.binaryminification.ui.theme.CalcScreen
@@ -67,7 +71,7 @@ fun HistoryScreen(
     Scaffold(
         topBar = {
             HistoryTopBar(
-                onNavigationIconClick = { navController.navigate(CalcScreen.route()) },
+                onNavigationIconClick = { navController.popBackStack() },
                 onClearRequest = { showDialog = true }
             )
         },
@@ -170,12 +174,18 @@ private fun HistoryItem(
     onItemClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     Column(
         modifier = modifier.clickable { onItemClick() }
     ) {
         ListItem(
             headlineContent = {
-                Text(text = item.input)
+                Text(
+                    text = item.input,
+                    modifier = Modifier.semantics {
+                        contentDescription = getEvaluationContentDescription(context, item.input)
+                    }
+                )
             },
             supportingContent = {
                 val dateString = DateFormat
@@ -185,9 +195,21 @@ private fun HistoryItem(
             },
             trailingContent = {
                 if (item.isExpanded) {
-                    Image(Icons.Default.KeyboardArrowUp, contentDescription = null)
+                    Image(
+                        Icons.Default.KeyboardArrowUp,
+                        contentDescription = stringResource(id = R.string.hide_accessibility),
+                        modifier = Modifier.semantics {
+                            onClick(context.getString(R.string.hide)) { onItemClick(); true }
+                        }
+                    )
                 } else {
-                    Image(Icons.Default.KeyboardArrowDown, contentDescription = null)
+                    Image(
+                        Icons.Default.KeyboardArrowDown,
+                        contentDescription = stringResource(id = R.string.expand_accessibility),
+                        modifier = Modifier.semantics {
+                            onClick(context.getString(R.string.expand)) { onItemClick(); true }
+                        }
+                    )
                 }
             },
         )
@@ -201,6 +223,9 @@ private fun HistoryItem(
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .padding(16.dp)
+                    .semantics {
+                        contentDescription = getEvaluationContentDescription(context, item.output)
+                    }
             )
         }
     }

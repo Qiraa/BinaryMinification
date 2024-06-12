@@ -21,6 +21,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
@@ -30,10 +31,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.invisibleToUser
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -79,7 +84,7 @@ fun OnboardingScreen(
                 ) { page ->
                     when (page) {
                         0 -> Page(
-                            textId = R.string.welcome,
+                            textId = R.string.onboarding_step1,
                             buttonTextId = R.string.next,
                             skipTextId = R.string.skip,
                             pageCount = pagerState.pageCount,
@@ -94,8 +99,9 @@ fun OnboardingScreen(
                                 navController.navigate(CalcScreen.route())
                             }
                         )
+
                         1 -> Page(
-                            textId = R.string.welcome,
+                            textId = R.string.onboarding_step2,
                             buttonTextId = R.string.next,
                             skipTextId = R.string.skip,
                             pageCount = pagerState.pageCount,
@@ -110,8 +116,9 @@ fun OnboardingScreen(
                                 navController.navigate(CalcScreen.route())
                             }
                         )
+
                         2 -> Page(
-                            textId = R.string.welcome,
+                            textId = R.string.onboarding_step3,
                             buttonTextId = R.string.next,
                             skipTextId = R.string.skip,
                             pageCount = pagerState.pageCount,
@@ -125,7 +132,8 @@ fun OnboardingScreen(
                                 navController.navigate(CalcScreen.route())
                             }
                         )
-                        else -> { }
+
+                        else -> {}
                     }
                 }
             }
@@ -133,6 +141,7 @@ fun OnboardingScreen(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun Page(
     textId: Int,
@@ -163,7 +172,7 @@ private fun Page(
                     alignment = Alignment.Center,
                     modifier = Modifier.size(152.dp),
                     painter = painterResource(id = R.drawable.logo),
-                    contentDescription = stringResource(id = R.string.logo)
+                    contentDescription = null,
                 )
                 Text(
                     text = stringResource(id = R.string.logic_calc),
@@ -172,6 +181,8 @@ private fun Page(
                     ),
                     color = Color.White,
                     fontSize = 32.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.semantics { invisibleToUser() }
                 )
                 Text(
                     text = stringResource(id = textId),
@@ -182,7 +193,8 @@ private fun Page(
                             Font(R.font.kalam_bold)
                         )
                     ),
-                    fontSize = 32.sp
+                    fontSize = 32.sp,
+                    textAlign = TextAlign.Center,
                 )
             }
         }
@@ -211,7 +223,8 @@ private fun Page(
                                 Color(0xFFFF9900),
                             ),
                         )
-                        val brush = if (currentPageIndex == index) selectedBrush else unselectedBrush
+                        val brush =
+                            if (currentPageIndex == index) selectedBrush else unselectedBrush
                         Box(
                             modifier = Modifier
                                 .padding(2.dp)
